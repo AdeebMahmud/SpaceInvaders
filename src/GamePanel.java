@@ -83,17 +83,20 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         }
         addKeyListener(this);
     }
+
+    long startTime;
+    long URDTimeMillis;
+    long waitTime;
+    long totalTime = 0;
+
+    int frameCount = 0;
+    int maxFrameCount = 30;
+    long targetTime = 1000/FPS;
     
-    private void start() {
-        
-        setFocusable(true);
-        requestFocus();        
+    private void init() {
         State = STATE.GAME;
         
         score = 1000;
-        gameStartTime = System.nanoTime();
-        
-        running = true;
 
         // UNITS
         player = new Player();
@@ -109,15 +112,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         layer = 1;
         
         fireChance = false;
-        
-        long startTime;
-        long URDTimeMillis;
-        long waitTime;
-        long totalTime = 0;
-        
-        int frameCount = 0;
-        int maxFrameCount = 30;
-        long targetTime = 1000/FPS;
         
         for(int i = 0; i < 5; i ++ ) {
             //Creates an array of Aliens
@@ -161,69 +155,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                  
             }
         }
-        
-        //GAME LOOP
-        
-        while(running) {
-            
-            gameEndTime = System.nanoTime();
-            elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
-            
-            fireChance = false;
-            randomAlienIndex = (int) (Math.random() * aliens.size());
-            
-            //Every 4 seconds, aliens have 33% chance to shoot
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
 
-                @Override
-                public void run() {
-
-                    int chance;
-                    chance = (int)(Math.random()*2) + 1;
-
-                    if(chance == 1) {
-                        
-                       fireChance = true;
-
-                    }
-                    
-                    for(int i = 0; i < civilians.size(); i ++ ){
-                        
-                        civilians.get(i).directionChange();
-                        
-                    }
-
-                }
-
-            }, 0, 3000);
-            
-            startTime = System.nanoTime();
-            
-            gameUpdate();
-            gameRender();
-            gameDraw();
-            
-            URDTimeMillis = (System.nanoTime() - startTime) / 1000000;
-            waitTime = targetTime - URDTimeMillis;
-            try {
-                Thread.sleep(waitTime);
-                
-            }
-            catch(Exception e) {
-            }
-            
-            totalTime += System.nanoTime() - startTime; 
-            frameCount++;
-            
-            if(frameCount == maxFrameCount) {
-                
-                averageFPS = 1000.0 / ((totalTime/frameCount)/1000000);
-                
-            }
-        }
-        System.out.println("not running");
-        doneRunning = true;
     }
     
     public void run() {
@@ -237,7 +169,73 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         
         gameRender();
         gameDraw();
-        start();
+
+        setFocusable(true);
+        requestFocus();
+        gameStartTime = System.nanoTime();
+        running = true;
+
+        init();
+        while(running) {
+
+            gameEndTime = System.nanoTime();
+            elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
+
+            fireChance = false;
+            randomAlienIndex = (int) (Math.random() * aliens.size());
+
+            //Every 4 seconds, aliens have 33% chance to shoot
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+
+                @Override
+                public void run() {
+
+                    int chance;
+                    chance = (int)(Math.random()*2) + 1;
+
+                    if(chance == 1) {
+
+                        fireChance = true;
+
+                    }
+
+                    for(int i = 0; i < civilians.size(); i ++ ){
+
+                        civilians.get(i).directionChange();
+
+                    }
+
+                }
+
+            }, 0, 3000);
+
+            startTime = System.nanoTime();
+
+            gameUpdate();
+            gameRender();
+            gameDraw();
+
+            URDTimeMillis = (System.nanoTime() - startTime) / 1000000;
+            waitTime = targetTime - URDTimeMillis;
+            try {
+                Thread.sleep(waitTime);
+
+            }
+            catch(Exception e) {
+            }
+
+            totalTime += System.nanoTime() - startTime;
+            frameCount++;
+
+            if(frameCount == maxFrameCount) {
+
+                averageFPS = 1000.0 / ((totalTime/frameCount)/1000000);
+
+            }
+        }
+        System.out.println("not running");
+        doneRunning = true;
     }
     
     //Runs 30 times per second
@@ -505,9 +503,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
             if (State == STATE.GAME_OVER || State == STATE.WIN || State == STATE.START) {
                 System.out.println("Key Pressed");
                 if (doneRunning) {
-                    start();
+                    init();
                 }
-            } 
+            }
             
         }
     }
