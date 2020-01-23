@@ -6,7 +6,7 @@
 
 /**
  *
- * @author adeeb
+ * @author Adeeb Mahmud
  */
 
 import javax.swing.JPanel;
@@ -14,24 +14,6 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
-
-import java.io.*;
-import java.io.File;
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-
-import org.w3c.dom.Node;
-
-import org.xml.sax.SAXException;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener {
     
@@ -41,6 +23,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     public static boolean fireChance;
     public static int score;
     public static boolean gameOver;
+    
+    public String stringScore = Integer.toString(score);
     
     private Thread thread;
     public static boolean running;
@@ -74,9 +58,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     
     public boolean newHigh;
     public int highscore = 0;
-    
-    public boolean firstTime = true;
-    
+  
     public XmlHandler xmlHandler = new XmlHandler();
     //public static String xmlFilePath = "/home/adeeb/NetBeansProjects/SpaceInvaders/src/scores.xml";
     
@@ -115,12 +97,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     long startTime;
     long URDTimeMillis;
     long waitTime;
-    long totalTime = 0;
-
-    int frameCount = 0;
-    int maxFrameCount = 30;
     long targetTime = 1000/FPS;
-    
     //init creates a new instance of the game. It will be called when the player wants to play again and at the start of the program.
     private void init() {
         
@@ -213,7 +190,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         
         //GAME LOOP
         while(running) {
-            System.out.println(State.name());
+            
+            System.out.println(State.name()); //RANDOM PRINT STATEMENT THAT MUST EXIST TO MAKE GAME FUNCTION PROPERLY.
+            
             if (State == STATE.GAME) {
                 gameEndTime = System.nanoTime();
                 elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
@@ -261,14 +240,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                 } catch (Exception e) {
                 }
 
-                totalTime += System.nanoTime() - startTime;
-                frameCount++;
-
-                if (frameCount == maxFrameCount) {
-
-                    averageFPS = 1000.0 / ((totalTime / frameCount) / 1000000);
-
-                }
+                
             } 
             
             
@@ -283,6 +255,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
             if(State != STATE.START && State != STATE.GAME) {
                 
                 State = STATE.STASUS;
+                
+                
             }
             
         }
@@ -299,23 +273,23 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
             
             //GAME OVER
             if (((!player.isAlive) || (civilians.isEmpty()))) {
+                
                 State = STATE.GAME_OVER;
                 doneRunning = true;
                 gameEndTime = System.nanoTime();
-                System.out.println(State.name());
-                this.requestFocusInWindow();
+                
 
             }
 
             //WIN CONCDITION
             if (aliens.isEmpty()) {
-                System.out.println(State);
+                
                 score += 1000; //If you win you get bonus points
                 State = STATE.WIN;
                 doneRunning = true;
                 gameEndTime = System.nanoTime();
                 
-                xmlHandler.writeScore(winScreen.username, "2"); //Null pointer 
+                xmlHandler.writeScore(winScreen.username, stringScore); //Null pointer 
                 
                 /*if(score > highscore) {
                     newHigh = true;

@@ -12,6 +12,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import org.w3c.dom.Node;
 
@@ -44,14 +45,19 @@ public class XmlHandler {
     //Take in user score as a string
     //Call write score() on JText Field event listener at win screen
     public void writeScore(String username, String roundScore) {
+        
         try {
-            filepath = "/home/adeeb/NetBeansProjects/SpaceInvaders/src/scores.xml";
-            docFactory = DocumentBuilderFactory.newInstance();
-            docBuilder = docFactory.newDocumentBuilder();
+            
+            filepath = "/home/adeeb/NetBeansProjects/SpaceInvaders/scores.xml";
+            
             document = docBuilder.parse(filepath);
-
+            document.getDocumentElement().normalize();
+            
+            //Get scores as scores
             Node scores = document.getFirstChild();
-            Node score = document.getElementsByTagName("scores").item(0);
+            
+            //Create new score element - child of scores
+            Element score = document.createElement("score");
 
             //Appends score to scores
             scores.appendChild(score); 
@@ -75,7 +81,7 @@ public class XmlHandler {
           catch (IOException e) {
             System.out.println(e.getMessage());
           }
-        catch (ParserConfigurationException | TransformerException | SAXException pce) {
+        catch (TransformerException | SAXException pce) {
            }
     }
     
