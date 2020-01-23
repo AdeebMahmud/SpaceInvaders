@@ -89,7 +89,7 @@ public class Alien  {
                     setMoveRight(false);
                     
                 }
-                y += 4;
+                y += 5;
             }
 
             if (GamePanel.aliens.get(i).x <= 0) {
@@ -101,7 +101,7 @@ public class Alien  {
                     
                 }
                 
-                y += 4;
+                y += 5;
             }
             
             if(firing) {

@@ -36,7 +36,7 @@ public class Player {
         y = GamePanel.HEIGHT-60;
         r = 5;
         
-        lives = 1; //code lives, on hit colour change
+        lives = 3; //code lives, on hit colour change
         isAlive = true;
         
         moveRight = false;
@@ -44,7 +44,7 @@ public class Player {
         
         firing = false;
         firingTimer = System.nanoTime();
-        firingDelay = 1000; //How fast the player can shoot. Avoids rapid fire to control game difficulty.
+        firingDelay = 600; //How fast the player can shoot. Avoids rapid fire to control game difficulty.
         
         dx = 0;
         dy = 0;
