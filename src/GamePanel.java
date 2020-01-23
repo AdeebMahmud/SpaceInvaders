@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     
     private Thread thread;
     public static boolean running;
-    private static boolean doneRunning = true;
+    private boolean doneRunning = true;
     private BufferedImage image;
     private Graphics2D g;
     
@@ -118,11 +118,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     
     //init creates a new instance of the game. It will be called when the player wants to play again and at the start of the program.
     private void init() {
-        
         State = STATE.GAME;
-        
-        doneRunning = false;
-        
+
         score = 3000;
 
         // UNITS
@@ -182,6 +179,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                  
             }
         }
+        doneRunning = false;
 
     }
     
@@ -203,68 +201,66 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         requestFocus();
         gameStartTime = System.nanoTime();
         running = true;
-        
-        init();
-        
-        if(firstTime) {
-            State = STATE.START;
-        }
-        
+
         while(running) {
-            gameEndTime = System.nanoTime();
-            elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
+            if (State == STATE.GAME) {
+                gameEndTime = System.nanoTime();
+                elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
 
-            fireChance = false;
-            randomAlienIndex = (int) (Math.random() * aliens.size());
+                fireChance = false;
+                randomAlienIndex = (int) (Math.random() * aliens.size());
 
-            //Every 4 seconds, aliens have 33% chance to shoot
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
+                //Every 4 seconds, aliens have 33% chance to shoot
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(new TimerTask() {
 
-                @Override
-                public void run() {
+                    @Override
+                    public void run() {
 
-                    int chance;
-                    chance = (int)(Math.random()*2) + 1;
+                        int chance;
+                        chance = (int) (Math.random() * 2) + 1;
 
-                    if(chance == 1) {
+                        if (chance == 1) {
 
-                        fireChance = true;
+                            fireChance = true;
+
+                        }
+
+                        for (int i = 0; i < civilians.size(); i++) {
+
+                            civilians.get(i).directionChange();
+
+                        }
 
                     }
 
-                    for(int i = 0; i < civilians.size(); i ++ ){
+                }, 0, 3000);
 
-                        civilians.get(i).directionChange();
+                startTime = System.nanoTime();
 
-                    }
+                gameUpdate();
+                gameRender();
+                gameDraw();
 
+                URDTimeMillis = (System.nanoTime() - startTime) / 1000000;
+                waitTime = targetTime - URDTimeMillis;
+                try {
+                    Thread.sleep(waitTime);
+
+                } catch (Exception e) {
                 }
 
-            }, 0, 3000);
+                totalTime += System.nanoTime() - startTime;
+                frameCount++;
 
-            startTime = System.nanoTime();
+                if (frameCount == maxFrameCount) {
 
-            gameUpdate();
-            gameRender();
-            gameDraw();
+                    averageFPS = 1000.0 / ((totalTime / frameCount) / 1000000);
 
-            URDTimeMillis = (System.nanoTime() - startTime) / 1000000;
-            waitTime = targetTime - URDTimeMillis;
-            try {
-                Thread.sleep(waitTime);
-
-            }
-            catch(Exception e) {
-            }
-
-            totalTime += System.nanoTime() - startTime;
-            frameCount++;
-
-            if(frameCount == maxFrameCount) {
-
-                averageFPS = 1000.0 / ((totalTime/frameCount)/1000000);
-
+                }
+            } else{
+                gameRender();
+                gameDraw();
             }
         }
         System.out.println("not running");
@@ -272,15 +268,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     
     //Runs 30 times per second
     private void gameUpdate() {
-        
-        // update will constantly update the game state.
-        player.update();
         //STATE UPDATES
         
         if(!doneRunning) {
             
             if (((!player.isAlive) || (civilians.isEmpty()))) {
-                
                 State = STATE.GAME_OVER;
                 doneRunning = true;
                 gameEndTime = System.nanoTime();
@@ -304,7 +296,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         }
         
         if(State == STATE.GAME) {
-            
+            // update will constantly update the game state.
+            player.update();
             //Score update: Start at a score of 1000 and decrement by factor of 4 times the elapsed time.
             score -= elapsedTime/4;
             
@@ -540,8 +533,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         if(keyCode == KeyEvent.VK_ENTER ) {
             if (State == STATE.GAME_OVER || State == STATE.WIN || State == STATE.START) {
                 System.out.println("Key Pressed");
-                if (doneRunning) {
-                    firstTime = false;
+                if (doneRunning || State == STATE.START) {
                     init();
                 }
             }
