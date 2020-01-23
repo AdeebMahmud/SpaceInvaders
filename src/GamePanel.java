@@ -53,7 +53,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     private GameOverScreen gameOverScreen;
     private WinScreen winScreen;
 
-    public static enum STATE {
+    public enum STATE {
         START,
         GAME,
         GAME_OVER,
@@ -61,7 +61,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         SCORES
     };
     
-    public static STATE State = STATE.START;
+    public STATE State = STATE.START;
     
     //CONSTRUCTOR
     public GamePanel() {
@@ -95,6 +95,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     
     private void init() {
         State = STATE.GAME;
+        doneRunning = false;
         
         score = 1000;
 
@@ -177,7 +178,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
         init();
         while(running) {
-
             gameEndTime = System.nanoTime();
             elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
 
@@ -235,7 +235,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
             }
         }
         System.out.println("not running");
-        doneRunning = true;
     }
     
     //Runs 30 times per second
@@ -245,24 +244,26 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         player.update();
         //STATE UPDATES
         
-        
-        if((player.isAlive == false) || (civilians.isEmpty())) {
-            System.out.println("Dead");
-            State = STATE.GAME_OVER;
-            running = false;
-            gameEndTime = System.nanoTime();
-            System.out.println(State.name());
-            
-        }
-        
-        //WIN CONCDITION
-        if(aliens.isEmpty()) {
-            System.out.println(State.name());
-            System.out.println("You win");
-            score += 1000; //If you win you get bonus points
-            State = STATE.WIN;
-            running = false;
-            gameEndTime = System.nanoTime();
+        if(!doneRunning) {
+            if (((!player.isAlive) || (civilians.isEmpty()))) {
+                System.out.println(State);
+                System.out.println("Dead");
+                State = STATE.GAME_OVER;
+                doneRunning = true;
+                gameEndTime = System.nanoTime();
+                System.out.println(State.name());
+
+            }
+
+            //WIN CONCDITION
+            if (aliens.isEmpty()) {
+                System.out.println(State);
+                System.out.println("You win");
+                score += 1000; //If you win you get bonus points
+                State = STATE.WIN;
+                doneRunning = true;
+                gameEndTime = System.nanoTime();
+            }
         }
         
         if(State == STATE.GAME) {
