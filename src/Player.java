@@ -44,7 +44,7 @@ public class Player {
         
         firing = false;
         firingTimer = System.nanoTime();
-        firingDelay = 600; //How fast the player can shoot. Avoids rapid fire to control game difficulty.
+        firingDelay = 400; //How fast the player can shoot. Avoids rapid fire to control game difficulty.
         
         dx = 0;
         dy = 0;

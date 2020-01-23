@@ -2,11 +2,20 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import javax.swing.JOptionPane;
 //SCORES FROM XML DATA
+
 public class WinScreen {
     
+    String username;
+    
     public void draw(Graphics2D g) {
+        
+        System.out.print("drawing win screen");
+        String username;
+        username = JOptionPane.showInputDialog("Enter your name");
+        System.out.print(username);
+        //looping forever
         Font fnt0 = new Font("arial", Font.BOLD, 30);
         g.setFont(fnt0);
         g.setColor(Color.WHITE);
@@ -20,4 +29,6 @@ public class WinScreen {
         //Ask for a name submission input field
         //XML DATA FORMATTING
     }
+    
+
 }

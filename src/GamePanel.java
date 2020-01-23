@@ -15,21 +15,6 @@ import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
 
-import java.io.File;
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener {
     
@@ -65,6 +50,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     public long gameStartTime;
     public long gameEndTime;
     
+    //JPanels for game Screens
     private StartScreen startScreen;
     private GameOverScreen gameOverScreen;
     private WinScreen winScreen;
@@ -118,6 +104,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     
     //init creates a new instance of the game. It will be called when the player wants to play again and at the start of the program.
     private void init() {
+        
         State = STATE.GAME;
 
         score = 3000;
@@ -131,8 +118,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         bullets = new ArrayList<Bullet>();
         alienBullets = new ArrayList<Bullet>();
         
-        aliensPerRow = 8;
-        aliensPerColumn = 3;
+        aliensPerRow = 2;
+        aliensPerColumn = 2;
         layer = 1;
         
         fireChance = false;
@@ -203,6 +190,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         running = true;
 
         while(running) {
+            
             if (State == STATE.GAME) {
                 gameEndTime = System.nanoTime();
                 elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
@@ -214,9 +202,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                 Timer timer = new Timer();
                 timer.scheduleAtFixedRate(new TimerTask() {
 
-                    @Override
+                   
                     public void run() {
-
+                        
                         int chance;
                         chance = (int) (Math.random() * 2) + 1;
 
@@ -272,11 +260,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         
         if(!doneRunning) {
             
+            //GAME OVER
             if (((!player.isAlive) || (civilians.isEmpty()))) {
                 State = STATE.GAME_OVER;
                 doneRunning = true;
                 gameEndTime = System.nanoTime();
                 System.out.println(State.name());
+                this.requestFocusInWindow();
 
             }
 
@@ -289,9 +279,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                 doneRunning = true;
                 gameEndTime = System.nanoTime();
                 
-                if(score > highscore) {
+                
+                /*if(score > highscore) {
                     newHigh = true;
-                }
+                }*/
             }
         }
         
@@ -498,17 +489,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         int keyCode = key.getKeyCode();
         
         if(keyCode == KeyEvent.VK_LEFT) {
-            System.out.println("Left Pressed");
+            
             player.setMoveLeft(true);
         }
         
         if(keyCode == KeyEvent.VK_RIGHT) {
-            System.out.println("Right Pressed");
+            
             player.setMoveRight(true);
         }
         
         if(keyCode == KeyEvent.VK_SPACE) {
-            System.out.println("Space Pressed");
+            
             player.setFiring(true);
         }
         
@@ -534,7 +525,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
             if (State == STATE.GAME_OVER || State == STATE.WIN || State == STATE.START) {
                 System.out.println("Key Pressed");
                 if (doneRunning || State == STATE.START) {
-                    init();
+                    
+                    init(); //Starts a new instance of the game
+                    this.requestFocusInWindow();
                 }
             }
             

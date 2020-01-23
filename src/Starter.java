@@ -8,10 +8,10 @@
  *
  * @author Adeeb Mahmud
  */
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class Starter {
-
+ 
     public static void main(String[] args) {
         
         JFrame window = new JFrame("Space Invaders");
