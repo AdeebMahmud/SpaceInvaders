@@ -106,7 +106,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         }
         addKeyListener(this);
     }
-
+    
     long startTime;
     long URDTimeMillis;
     long waitTime;
