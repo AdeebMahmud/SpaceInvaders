@@ -10,12 +10,11 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Attr;
+
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+
 import org.xml.sax.SAXException;
 
 /*
@@ -35,34 +34,49 @@ public class XmlHandler {
     DocumentBuilder docBuilder;
     DocumentBuilderFactory docFactory;
     
-    public XmlHandler() throws ParserConfigurationException, SAXException, IOException {
+    
+    public XmlHandler() {
         
-        filepath = "/home/adeeb/NetBeansProjects/XMLCreate.zip/src/timetable.xml";
-        docFactory = DocumentBuilderFactory.newInstance();
-        docBuilder = docFactory.newDocumentBuilder();
-        document = docBuilder.parse(filepath);
     }
     
     //Will write a new score to the xml document if it is within the top 5 scores
     
-    public void createXML() throws ParserConfigurationException, SAXException, IOException {
-        
-        
-        Node scores = document.getFirstChild();
-        document.appendChild(this.writeScore("name", "score", document));
-        Element score = document.createElement("score");
-        
-    }
-    
     //Take in user score as a string
     //Call write score() on JText Field event listener at win screen
-    public Element writeScore(String username, String roundScore, Document document) throws ParserConfigurationException{
+    public void writeScore(String username, String roundScore) {
+        try {
+            filepath = "/home/adeeb/NetBeansProjects/XMLCreate.zip/src/timetable.xml";
+            docFactory = DocumentBuilderFactory.newInstance();
+            docBuilder = docFactory.newDocumentBuilder();
+            document = docBuilder.parse(filepath);
+
+            Node scores = document.getFirstChild();
+            Node score = document.getElementsByTagName("scores").item(0);
+
+            //Appends score to scores
+            scores.appendChild(score); 
+
+            //Appends name and value to score
+            score.appendChild(document.createTextNode(username));
+            score.appendChild(document.createTextNode(roundScore));
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(document);
+            StreamResult result = new StreamResult(new File(filepath));
+            transformer.transform(source, result);
+        }
         
-        Text attributeUsername = document.createTextNode(username);
-        Element attributeScore = document.createElement(roundScore); //Create school
-        attributeScore.appendChild(attributeUsername); //Finally append it to school node
-        
-        return attributeScore;
+        catch (UnsupportedEncodingException e) {
+            System.out.println(
+             "This VM does not support the Latin-1 character set."
+            );
+          }
+          catch (IOException e) {
+            System.out.println(e.getMessage());
+          }
+        catch (ParserConfigurationException | TransformerException | SAXException pce) {
+           }
     }
     
     //Will display the top 5 scores of the Xml document

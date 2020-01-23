@@ -15,6 +15,23 @@ import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
 
+import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+
+import org.w3c.dom.Node;
+
+import org.xml.sax.SAXException;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener {
     
@@ -60,14 +77,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     
     public boolean firstTime = true;
     
-    public static String xmlFilePath = "/home/adeeb/NetBeansProjects/SpaceInvaders/src/scores.xml";
+    public XmlHandler xmlHandler;
+    //public static String xmlFilePath = "/home/adeeb/NetBeansProjects/SpaceInvaders/src/scores.xml";
     
     public enum STATE {
         START,
         GAME,
         GAME_OVER,
         WIN,
-        SCORES
+        SCORES,
+        STASUS
     };
     
     public STATE State = STATE.START;
@@ -105,6 +124,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     //init creates a new instance of the game. It will be called when the player wants to play again and at the start of the program.
     private void init() {
         
+        System.out.print("init");
         State = STATE.GAME;
 
         score = 3000;
@@ -166,10 +186,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                  
             }
         }
+        System.out.println("end of init state: " + State.name());
         doneRunning = false;
 
     }
     
+    //This will run on the very first time. The state is set to start. Every other execution of the program will run init to reset variables
     public void run() {
         
         System.out.print("run");
@@ -190,7 +212,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         running = true;
 
         while(running) {
-            
+            System.out.println(State.name());
             if (State == STATE.GAME) {
                 gameEndTime = System.nanoTime();
                 elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
@@ -246,11 +268,25 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                     averageFPS = 1000.0 / ((totalTime / frameCount) / 1000000);
 
                 }
-            } else{
+            } 
+            
+            
+            
+            else if(State == STATE.START) {
+                
                 gameRender();
                 gameDraw();
+                System.out.print("else running "+ State.name());
             }
+            
+            if(State != STATE.START && State != STATE.GAME) {
+                
+                State = STATE.STASUS;
+            }
+            
         }
+        //If the game is not running... render and draw once because it will inevitably be either startwin or game over screen
+        
         System.out.println("not running");
     }
     
@@ -273,12 +309,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
             //WIN CONCDITION
             if (aliens.isEmpty()) {
                 System.out.println(State);
-                System.out.println("You win");
                 score += 1000; //If you win you get bonus points
                 State = STATE.WIN;
                 doneRunning = true;
                 gameEndTime = System.nanoTime();
                 
+                //xmlHandler.writeScore("Adeeb", "2"); //Null pointer
                 
                 /*if(score > highscore) {
                     newHigh = true;
@@ -458,11 +494,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                 break;
             case GAME_OVER:
                 gameOverScreen.draw(g);
+                //running = false;
                 break;
             case WIN:
                 winScreen.draw(g);
-                break;
-            default:
+                //running = false;
                 break;
         }
         
@@ -522,13 +558,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         }
         
         if(keyCode == KeyEvent.VK_ENTER ) {
-            if (State == STATE.GAME_OVER || State == STATE.WIN || State == STATE.START) {
+            if (State == STATE.GAME_OVER || State == STATE.WIN || State == STATE.START || State == STATE.STASUS) {
                 System.out.println("Key Pressed");
-                if (doneRunning || State == STATE.START) {
-                    
+                
+                    System.out.print("second if reached");
+                    //this.requestFocusInWindow();
                     init(); //Starts a new instance of the game
-                    this.requestFocusInWindow();
-                }
+                    //this.requestFocusInWindow();
+                    System.out.print(State.name());
+                
             }
             
         }
