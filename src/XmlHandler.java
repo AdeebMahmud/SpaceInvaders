@@ -45,7 +45,7 @@ public class XmlHandler {
     //Call write score() on JText Field event listener at win screen
     public void writeScore(String username, String roundScore) {
         try {
-            filepath = "/home/adeeb/NetBeansProjects/XMLCreate.zip/src/timetable.xml";
+            filepath = "/home/adeeb/NetBeansProjects/SpaceInvaders/src/score.xml";
             docFactory = DocumentBuilderFactory.newInstance();
             docBuilder = docFactory.newDocumentBuilder();
             document = docBuilder.parse(filepath);

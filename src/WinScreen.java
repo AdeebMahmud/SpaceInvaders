@@ -9,7 +9,9 @@ public class WinScreen {
     
     String username;
     
+    
     public void draw(Graphics2D g) {
+        
         
         //import xml
         
@@ -21,13 +23,15 @@ public class WinScreen {
         Font fnt1 = new Font("arial", Font.BOLD, 10);
         g.drawString("HIGH SCORES", GamePanel.WIDTH/2-130, GamePanel.HEIGHT/2+50);
         
-        String username;
         username = JOptionPane.showInputDialog("Enter your name");
+        
+        System.out.print(username);
         /*if(newHigh) {
             g.drawString("NEW HIGH SCORE!", GamePanel.WIDTH/2-130, GamePanel.HEIGHT/2);
         }*/
         //Ask for a name submission input field
         //XML DATA FORMATTING
+        
     }
     
 

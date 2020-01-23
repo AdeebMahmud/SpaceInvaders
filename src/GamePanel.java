@@ -77,7 +77,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     
     public boolean firstTime = true;
     
-    public XmlHandler xmlHandler;
+    public XmlHandler xmlHandler = new XmlHandler();
     //public static String xmlFilePath = "/home/adeeb/NetBeansProjects/SpaceInvaders/src/scores.xml";
     
     public enum STATE {
@@ -212,7 +212,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         running = true;
 
         while(running) {
-            System.out.println(State.name());
+            
             if (State == STATE.GAME) {
                 gameEndTime = System.nanoTime();
                 elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
@@ -276,9 +276,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                 
                 gameRender();
                 gameDraw();
-                System.out.print("else running "+ State.name());
+                
             }
             
+            //Stasus state is used to prevent win and game over screens from rendering multiple times. They only need to be rendered once.
             if(State != STATE.START && State != STATE.GAME) {
                 
                 State = STATE.STASUS;
@@ -314,7 +315,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                 doneRunning = true;
                 gameEndTime = System.nanoTime();
                 
-                //xmlHandler.writeScore("Adeeb", "2"); //Null pointer
+                xmlHandler.writeScore(winScreen.username, "2"); //Null pointer 
                 
                 /*if(score > highscore) {
                     newHigh = true;
