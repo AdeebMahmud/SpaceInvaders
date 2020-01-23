@@ -210,9 +210,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         requestFocus();
         gameStartTime = System.nanoTime();
         running = true;
-
+        
+        //GAME LOOP
         while(running) {
-            
+            System.out.println(State.name());
             if (State == STATE.GAME) {
                 gameEndTime = System.nanoTime();
                 elapsedTime = (gameEndTime - gameStartTime) / 1000000000;
@@ -269,7 +270,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
                 }
             } 
-            
             
             
             else if(State == STATE.START) {
