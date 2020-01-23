@@ -1,0 +1,26 @@
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
+
+
+public class GameOverScreen {
+    
+    public void draw(Graphics2D g) {
+        
+        Font font_0 = new Font("arial", Font.BOLD, 30);
+        g.setFont(font_0);
+        g.setColor(Color.WHITE);
+        g.drawString("GAME OVER!", GamePanel.WIDTH/2-100, GamePanel.HEIGHT/2-100);
+        
+        Font font_1 = new Font("arial", Font.BOLD, 20);
+        g.setFont(font_1);
+        
+        
+    }
+    
+} 
