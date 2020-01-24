@@ -2,9 +2,12 @@
 import java.io.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -13,7 +16,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import org.w3c.dom.Node;
 
 import org.xml.sax.SAXException;
@@ -26,7 +28,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author adeeb
+ * @author Adeeb
  */
 public class XmlHandler {
     
@@ -48,29 +50,37 @@ public class XmlHandler {
         
         try {
             
-            filepath = "/home/adeeb/NetBeansProjects/SpaceInvaders/scores.xml";
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             
+            filepath = "src/scores.xml";
+            
+            System.out.println(docBuilder);
             document = docBuilder.parse(filepath);
             document.getDocumentElement().normalize();
             
             //Get scores as scores
             Node scores = document.getFirstChild();
             
-            //Create new score element - child of scores
+            //Create new score element  - child of scores
+            
             Element score = document.createElement("score");
-
+            
+            score.setAttribute("name", username);
+            score.setAttribute("value", roundScore);
+            
             //Appends score to scores
-            scores.appendChild(score); 
-
+            scores.appendChild(score);
+            
             //Appends name and value to score
-            score.appendChild(document.createTextNode(username));
-            score.appendChild(document.createTextNode(roundScore));
-
+            document.getDocumentElement().normalize();
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(document);
             StreamResult result = new StreamResult(new File(filepath));
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(source, result);
+             
         }
         
         catch (UnsupportedEncodingException e) {
@@ -81,8 +91,10 @@ public class XmlHandler {
           catch (IOException e) {
             System.out.println(e.getMessage());
           }
-        catch (TransformerException | SAXException pce) {
-           }
+        catch (ParserConfigurationException | SAXException pce) {
+           } catch (TransformerException ex) {
+            Logger.getLogger(XmlHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     //Will display the top 5 scores of the Xml document

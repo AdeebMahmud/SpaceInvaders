@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener {
     
@@ -82,6 +83,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         requestFocus();
         
     }
+    
     
     //FUNCTIONS
     public void addNotify() {
@@ -284,16 +286,18 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
             //WIN CONCDITION
             if (aliens.isEmpty()) {
                 
+                String username;
+                
                 score += 1000; //If you win you get bonus points
                 State = STATE.WIN;
                 doneRunning = true;
                 gameEndTime = System.nanoTime();
                 
-                xmlHandler.writeScore(winScreen.username, stringScore); //Null pointer 
+                System.out.println(winScreen.username);
                 
-                /*if(score > highscore) {
-                    newHigh = true;
-                }*/
+                username = JOptionPane.showInputDialog("Enter your name");
+                xmlHandler.writeScore(username, Integer.toString(score)); //Null pointer 
+               
             }
         }
         
