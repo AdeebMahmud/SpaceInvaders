@@ -24,9 +24,8 @@ public class Alien  {
     boolean moveLeft;
     boolean isAlive; //will be turned false once hit by projectile
     boolean isVisilbe; //will be turned false once isAlive is false
-    
-    
     boolean firing;
+    
     long firingTimer;
     long firingDelay;
     
@@ -54,10 +53,12 @@ public class Alien  {
     public void setMoveLeft(boolean b) {moveLeft = b;}
     public void setMoveRight(boolean b) {moveRight = b;}
     
+    // Getters. Used in collision calculation with other class getters
     public double getX() { return x; };
     public double getY() { return y; };
     public double getR() { return r; };
     
+    // hit is called during collisions. If the alien is hit, remove it from play
     public void hit() {
         
         GamePanel.score += 100;
@@ -79,19 +80,24 @@ public class Alien  {
             x += speed;
         }
         
+        // WALL BOUNCE MECHANIC
+        // Iterate through Aliens checking if any of them have hit the wall
         for(int i = 0; i < GamePanel.aliens.size(); i ++ ) {
             
             if (GamePanel.aliens.get(i).x >= GamePanel.WIDTH) {
             
             //If one alien hits the edge, all change direction to keep them in the same block
+            // Iterate through aliens and change each's direction
                 for (Alien n : GamePanel.aliens) {
                     setMoveLeft(true);
                     setMoveRight(false);
                     
                 }
+                // After hitting a wall, move the aliens down by 5
                 y += 5;
             }
 
+            // Perform the same action if the left wall is hit
             if (GamePanel.aliens.get(i).x <= 0) {
 
                 //If one alien hits the edge, all change direction to keep them in the same block
@@ -100,11 +106,13 @@ public class Alien  {
                     setMoveLeft(false);
                     
                 }
-                
+                // After hitting a wall, move the aliens down by 5
                 y += 5;
             }
             
+            // Firing delay in combination with Game Loop timer to control rate of fire
             if(firing) {
+                
             long elapsed = (System.nanoTime() - firingTimer)/ 1000000;
             
                 //shoot a bullet
@@ -119,6 +127,7 @@ public class Alien  {
         }
     }
     
+    // Draw as oval utilizing x and y coordinates as dimensions
     public void draw(Graphics2D g) {
         
         g.setColor(color1);

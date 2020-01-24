@@ -16,16 +16,17 @@ public class Player {
     int dx;
     int dy;
     int speed;
+    int lives;
     
     boolean moveRight;
     boolean moveLeft;
     boolean isAlive;
-    
     boolean firing;
+    
+    // Used to control fire rate
     long firingTimer;
     long firingDelay;
     
-    int lives;
     Color color1;
     
     
@@ -54,12 +55,15 @@ public class Player {
     }
     
     //FUNCTIONS
+    
+    // Used in GamePanel event listeners
     public void setMoveLeft(boolean b) {moveLeft = b;}
     public void setMoveRight(boolean b) {moveRight = b;}
     public double getX() { return x; };
     public double getY() { return y; };
     public double getR() { return r; };
     
+    // The player starts with 3 lives. The live counter goes down and a visual indicator is given to the player every time it is hit.
     public void hit() {
         
         lives--;
@@ -96,16 +100,20 @@ public class Player {
             dx = speed;
         }
         
+        // Controls the player fire
+        // A fire rate is implemented to add difficulty to the game
+        
         if(firing) {
             long elapsed = (System.nanoTime() - firingTimer)/ 1000000;
             
             if(elapsed > firingDelay) {
-                GamePanel.bullets.add(new Bullet(270, x, y));
+                GamePanel.bullets.add(new Bullet(270, x, y)); // Add a new bullet to the bulletsArray in GamePanel
                 firingTimer = System.nanoTime();
             }
         }
         
-        x += dx;
+        // Update x and y according to player movement and speed
+        x += dx; 
         y += dy;
         
         //Out of bounds control
@@ -119,7 +127,9 @@ public class Player {
         
     }
     
+    // Draw as oval utilizing x and y coordinates as dimensions
     public void draw(Graphics2D g) {
+        
         g.setColor(color1);
         g.fillOval(x-r, y-r, 4*r, 2*r);
                 

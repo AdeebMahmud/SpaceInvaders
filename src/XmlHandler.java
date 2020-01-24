@@ -20,16 +20,13 @@ import org.w3c.dom.Node;
 
 import org.xml.sax.SAXException;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
  * @author Adeeb
  */
+
+// This class is used to handle Xml writing.
 public class XmlHandler {
     
     String filepath;
@@ -42,37 +39,35 @@ public class XmlHandler {
         
     }
     
-    //Will write a new score to the xml document if it is within the top 5 scores
-    
-    //Take in user score as a string
-    //Call write score() on JText Field event listener at win screen
+    // Call write score() on JText Field event listener at WinScreen. This function is used to write the player scores to an xml file.
+    // This allows scores to be saved in between program instances.
+    // Take in the username and the score and save it to scores.xml
     public void writeScore(String username, String roundScore) {
         
         try {
             
+            // Xml Reading
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             
             filepath = "src/scores.xml";
-            
-            System.out.println(docBuilder);
             document = docBuilder.parse(filepath);
             document.getDocumentElement().normalize();
             
-            //Get scores as scores
+            //Get the root node scores
             Node scores = document.getFirstChild();
             
-            //Create new score element  - child of scores
-            
+            //Create new score element - child of scores
             Element score = document.createElement("score");
             
+            // Give each score element a name representing the player who submitted the score and the score
             score.setAttribute("name", username);
+            
             score.setAttribute("value", roundScore);
             
-            //Appends score to scores
-            scores.appendChild(score);
+            scores.appendChild(score); //Appends score to scores
             
-            //Appends name and value to score
+            // Writes to the external scores.xml file
             document.getDocumentElement().normalize();
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -95,10 +90,5 @@ public class XmlHandler {
            } catch (TransformerException ex) {
             Logger.getLogger(XmlHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    //Will display the top 5 scores of the Xml document
-    public static void listScores(){
-    
     }
 }

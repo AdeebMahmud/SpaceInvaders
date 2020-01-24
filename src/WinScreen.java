@@ -4,7 +4,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,44 +12,34 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-//SCORES FROM XML DATA
 
+// The WinScreen is displayed when the player wins the game
 public class WinScreen {
     
+    //FIELDS
     public String username;
     private String filepath;
     private Document document;
     private DocumentBuilder docBuilder;
     private DocumentBuilderFactory docFactory;
-    private Dictionary scoreDictionary;
     private Score[] scoreArray;
-    
     
     public void draw(Graphics2D g) {
         
-        //username = JOptionPane.showInputDialog("Enter your name");
-        //import xml
-        
-        //looping forever
+        //Draw simple WinScreen text utilizing the graphics library
         Font fnt0 = new Font("arial", Font.BOLD, 30);
         g.setFont(fnt0);
         g.setColor(Color.WHITE);
         g.drawString("YOU WIN!", GamePanel.WIDTH/2-100, GamePanel.HEIGHT/2-100);
-        Font fnt1 = new Font("arial", Font.BOLD, 10);
         g.drawString("HIGH SCORES", GamePanel.WIDTH/2-130, GamePanel.HEIGHT/2);
         
-        System.out.print(username);
-        /*if(newHigh) {
-            g.drawString("NEW HIGH SCORE!", GamePanel.WIDTH/2-130, GamePanel.HEIGHT/2);
-        }*/
-        //Ask for a name submission input field
-        //XML DATA FORMATTING
+        // READING XML DATA FROM EXTERNAL FILE
         try {
+            
+            // XML READ SETUP
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -58,25 +47,24 @@ public class WinScreen {
             document = docBuilder.parse(filepath);
             document.getDocumentElement().normalize();
             
-            scoreDictionary = new Hashtable<String, String>();
-            
+            // Create a new nodeList to retrieve all score tags and their data from scores in the Xml
             NodeList scores = document.getElementsByTagName("score");
             
+            scoreArray = new Score[scores.getLength()]; // Initialize a new array of type Score.
             
-            scoreArray = new Score[scores.getLength()];
+            // Iterate through each element in the nodeList and append their data to the scoreArray
             
             for (int i = 0; i < scores.getLength(); i ++) {
                 
-                
                 Node data = scores.item(i);
                 Element elementData = (Element)data;
-                
-                System.out.println(elementData.getAttribute("name"));
                 Score score = new Score(elementData.getAttribute("name"), Integer.parseInt(elementData.getAttribute("value")));
                 
                 scoreArray[i] = score;
             }
-            //SORT
+            
+            //SORT ARRAY FOR HIGH SCORE DISPLAY
+            // Bubble sort implementation from highest to lowest
             for ( int i = 0; i < scoreArray.length; i ++) {
                 
                 for(int j = 0; j < scoreArray.length-1; j ++ ) {
@@ -89,27 +77,28 @@ public class WinScreen {
                 }
             } 
             
-            // Print Scores
+            // DISPLAY TOP 5 SCORES
             if(scoreArray.length < 5) {
                 
                 for(int i = 0; i < scoreArray.length; i++) {
                 
+                    // Draw the top 5 scores on the WinScreen
                     g.drawString(scoreArray[i].name + ": " + scoreArray[i].score, GamePanel.WIDTH/2-130, GamePanel.HEIGHT/2+40 + i*35);
                     
                 }
                 
             }
             
-            //Print top 5 scores
+            // If there are less than 5 scores, simply print out all elements in the scoreArray
             else {
             
                 for(int i = 0; i < 5; i++) {
                 
+                    // Draw the scores on the WinScreen
                     g.drawString(scoreArray[i].name + ": " + scoreArray[i].score, GamePanel.WIDTH/2-130, GamePanel.HEIGHT/2+50 + i*35);
                     
                 }
             }
-            
         }
         
         catch (UnsupportedEncodingException e) {
@@ -123,6 +112,5 @@ public class WinScreen {
         catch (ParserConfigurationException | SAXException pce) {
            } 
         }
-        
     }
 

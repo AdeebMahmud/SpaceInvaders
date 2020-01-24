@@ -5,11 +5,14 @@
  */
 
 /**
- *
+ * This program demonstrates basic java game development in creating a SpaceInvaders type 2d video game
+ * ICS4UE
+ *Date: January 23 2019
  * @author Adeeb Mahmud
  */
 import javax.swing.*;
 
+//This class is what runs when the program is run. It creates a new GamePanel.
 public class Starter {
  
     public static void main(String[] args) {
