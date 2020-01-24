@@ -117,8 +117,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         bullets = new ArrayList<Bullet>();
         alienBullets = new ArrayList<Bullet>();
         
-        aliensPerRow = 2;
-        aliensPerColumn = 2;
+        aliensPerRow = 5;
+        aliensPerColumn = 3;
         layer = 1;
         
         fireChance = false;

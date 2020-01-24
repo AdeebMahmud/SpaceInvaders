@@ -20,6 +20,7 @@ public class StartScreen extends JPanel {
         Font fnt0 = new Font("arial", Font.BOLD, 30);
         g.setFont(fnt0);
         g.setColor(Color.WHITE);
+        g.drawString("SPACE INVADERS", GamePanel.WIDTH/7 + 30, GamePanel.HEIGHT/2 - 100);
         g.drawString("PRESS ENTER TO PLAY", GamePanel.WIDTH/7, GamePanel.HEIGHT/2);
         
         add(usernameInput);
